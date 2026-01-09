@@ -106,7 +106,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-products:5432/products_db
       SPRING_DATASOURCE_USERNAME: product_user
       SPRING_DATASOURCE_PASSWORD: ${PRODUCT_DB_PASSWORD:-product_password}
-      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/secure-microservices
+      KEYCLOAK_ISSUER_URI: http://localhost:8180/realms/secure-microservices
       KEYCLOAK_JWK_URI: http://keycloak:8080/realms/secure-microservices/protocol/openid-connect/certs
     networks:
       - backend-network
@@ -131,7 +131,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-orders:5432/orders_db
       SPRING_DATASOURCE_USERNAME: order_user
       SPRING_DATASOURCE_PASSWORD: ${ORDER_DB_PASSWORD:-order_password}
-      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/secure-microservices
+      KEYCLOAK_ISSUER_URI: http://localhost:8180/realms/secure-microservices
       KEYCLOAK_JWK_URI: http://keycloak:8080/realms/secure-microservices/protocol/openid-connect/certs
       PRODUCT_SERVICE_URL: http://product-service:8081
     networks:
@@ -162,7 +162,7 @@ services:
     environment:
       PRODUCT_SERVICE_URL: http://product-service:8081
       ORDER_SERVICE_URL: http://order-service:8082
-      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/secure-microservices
+      KEYCLOAK_ISSUER_URI: http://localhost:8180/realms/secure-microservices
       KEYCLOAK_JWK_URI: http://keycloak:8080/realms/secure-microservices/protocol/openid-connect/certs
     ports:
       - "8080:8080"
