@@ -395,13 +395,6 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 ## 👥 Auteurs
 
-- **Étudiant en Cybersécurité** - Projet de fin de module
+- **Lachhab Mohammed** 
 
 ---
-
-## 🙏 Remerciements
-
-- Spring Boot Team
-- Keycloak Community
-- React Community
-- Docker Community
