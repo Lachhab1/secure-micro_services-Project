@@ -108,40 +108,35 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Run OWASP Dependency Check - Product Service
-        working-directory: ./product-service
-        continue-on-error: true
+      - name: Download Dependency-Check CLI
         run: |
-          mvn org.owasp:dependency-check-maven:check -B \
-            -DnvdAnalyzerEnabled=false \
-            -DossindexAnalyzerEnabled=true \
-            -DfailBuildOnCVSS=11 || echo "⚠️ Product scan completed"
+          VERSION="10.0.2"
+          wget -q "https://github.com/jeremylong/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip"
+          unzip -q "dependency-check-${VERSION}-release.zip"
 
-      - name: Run OWASP Dependency Check - Order Service
-        working-directory: ./order-service
+      - name: Run OWASP Dependency Check
         continue-on-error: true
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
-          mvn org.owasp:dependency-check-maven:check -B \
-            -DnvdAnalyzerEnabled=false \
-            -DossindexAnalyzerEnabled=true \
-            -DfailBuildOnCVSS=11 || echo "⚠️ Order scan completed"
-
-      - name: Run OWASP Dependency Check - API Gateway
-        working-directory: ./api-gateway
-        continue-on-error: true
-        run: |
-          mvn org.owasp:dependency-check-maven:check -B \
-            -DnvdAnalyzerEnabled=false \
-            -DossindexAnalyzerEnabled=true \
-            -DfailBuildOnCVSS=11 || echo "⚠️ Gateway scan completed"
+          ./dependency-check/bin/dependency-check.sh \
+            --project "secure-microservices" \
+            --scan ./product-service \
+            --scan ./order-service \
+            --scan ./api-gateway \
+            --format HTML \
+            --out ./reports \
+            --nvdApiKey "${NVD_API_KEY}" \
+            --nvdApiDelay 10000 \
+            --nvdDatafeed https://dependency-check.github.io/DependencyCheck_Nightly/nvdcache/nvdcache.zip \
+            --failOnCVSS 11 || echo "⚠️ OWASP check completed"
 
       - name: Upload Dependency Check Reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: dependency-check-reports
-          path: |
-            */target/dependency-check-report.html
+          path: reports/
           if-no-files-found: ignore
 
   trivy-scan:
