@@ -114,14 +114,12 @@ jobs:
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
-          if [ -n "$NVD_API_KEY" ]; then
-            mvn dependency-check:check -B \
-              -DnvdApiKey=$NVD_API_KEY \
-              -DnvdApiDelay=6000 \
-              -DfailBuildOnAnyVulnerability=false || echo "⚠️ OWASP check completed with warnings"
-          else
-            echo "⚠️ NVD_API_KEY not set, skipping OWASP check"
-          fi
+          echo "Running OWASP Dependency Check..."
+          mvn dependency-check:check -B \
+            -DnvdApiKey="${NVD_API_KEY}" \
+            -DnvdApiDelay=6000 \
+            -DnvdValidForHours=24 \
+            -DfailBuildOnCVSS=11 || echo "⚠️ OWASP check completed with warnings"
 
       - name: Run OWASP Dependency Check - Order Service
         working-directory: ./order-service
@@ -129,14 +127,12 @@ jobs:
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
-          if [ -n "$NVD_API_KEY" ]; then
-            mvn dependency-check:check -B \
-              -DnvdApiKey=$NVD_API_KEY \
-              -DnvdApiDelay=6000 \
-              -DfailBuildOnAnyVulnerability=false || echo "⚠️ OWASP check completed with warnings"
-          else
-            echo "⚠️ NVD_API_KEY not set, skipping OWASP check"
-          fi
+          echo "Running OWASP Dependency Check..."
+          mvn dependency-check:check -B \
+            -DnvdApiKey="${NVD_API_KEY}" \
+            -DnvdApiDelay=6000 \
+            -DnvdValidForHours=24 \
+            -DfailBuildOnCVSS=11 || echo "⚠️ OWASP check completed with warnings"
 
       - name: Upload Dependency Check Reports
         uses: actions/upload-artifact@v4
