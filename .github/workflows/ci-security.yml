@@ -116,6 +116,8 @@ jobs:
 
       - name: Run OWASP Dependency Check
         continue-on-error: true
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
           ./dependency-check/bin/dependency-check.sh \
             --project "secure-microservices" \
@@ -124,7 +126,8 @@ jobs:
             --scan ./api-gateway \
             --format HTML \
             --out ./reports \
-            --noupdate \
+            --nvdApiKey "${NVD_API_KEY}" \
+            --nvdApiDelay 20000 \
             --failOnCVSS 11 || echo "⚠️ OWASP check completed"
 
       - name: Upload Dependency Check Report
