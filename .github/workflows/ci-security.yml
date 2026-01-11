@@ -110,7 +110,7 @@ jobs:
 
       - name: Download Dependency-Check CLI
         run: |
-          VERSION="9.0.9"
+          VERSION="10.0.2"
           wget -q "https://github.com/jeremylong/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip"
           unzip -q "dependency-check-${VERSION}-release.zip"
 
