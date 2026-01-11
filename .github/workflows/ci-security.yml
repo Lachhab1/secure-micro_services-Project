@@ -210,15 +210,6 @@ jobs:
             p/javascript
             p/security-audit
             p/owasp-top-ten
-          generateSarif: true
-
-      - name: Upload Semgrep Results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: semgrep-results
-          path: semgrep.sarif
-          if-no-files-found: ignore
 
   # ==========================================
   # DOCKER BUILD & PUSH
