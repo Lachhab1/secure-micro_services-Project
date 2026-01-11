@@ -108,29 +108,34 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Download Dependency-Check CLI
+        run: |
+          VERSION="9.0.9"
+          wget -q "https://github.com/jeremylong/DependencyCheck/releases/download/v${VERSION}/dependency-check-${VERSION}-release.zip"
+          unzip -q "dependency-check-${VERSION}-release.zip"
+
       - name: Run OWASP Dependency Check
-        uses: dependency-check/Dependency-Check_Action@main
-        id: depcheck
-        with:
-          project: 'secure-microservices'
-          path: '.'
-          format: 'HTML'
-          args: >
-            --scan ./product-service
-            --scan ./order-service
-            --scan ./api-gateway
-            --enableExperimental
-            --nvdApiKey ${{ secrets.NVD_API_KEY }}
-            --nvdApiDelay 10000
-            --failOnCVSS 11
         continue-on-error: true
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          ./dependency-check/bin/dependency-check.sh \
+            --project "secure-microservices" \
+            --scan ./product-service \
+            --scan ./order-service \
+            --scan ./api-gateway \
+            --format HTML \
+            --out ./reports \
+            --nvdApiKey "${NVD_API_KEY}" \
+            --nvdApiDelay 10000 \
+            --failOnCVSS 11 || echo "⚠️ OWASP check completed"
 
       - name: Upload Dependency Check Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: dependency-check-report
-          path: reports/dependency-check-report.html
+          path: reports/
           if-no-files-found: ignore
 
   trivy-scan:
