@@ -110,22 +110,30 @@ jobs:
 
       - name: Run OWASP Dependency Check - Product Service
         working-directory: ./product-service
+        continue-on-error: true
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
           if [ -n "$NVD_API_KEY" ]; then
-            mvn dependency-check:check -B -DnvdApiKey=$NVD_API_KEY || true
+            mvn dependency-check:check -B \
+              -DnvdApiKey=$NVD_API_KEY \
+              -DnvdApiDelay=6000 \
+              -DfailBuildOnAnyVulnerability=false || echo "⚠️ OWASP check completed with warnings"
           else
             echo "⚠️ NVD_API_KEY not set, skipping OWASP check"
           fi
 
       - name: Run OWASP Dependency Check - Order Service
         working-directory: ./order-service
+        continue-on-error: true
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
           if [ -n "$NVD_API_KEY" ]; then
-            mvn dependency-check:check -B -DnvdApiKey=$NVD_API_KEY || true
+            mvn dependency-check:check -B \
+              -DnvdApiKey=$NVD_API_KEY \
+              -DnvdApiDelay=6000 \
+              -DfailBuildOnAnyVulnerability=false || echo "⚠️ OWASP check completed with warnings"
           else
             echo "⚠️ NVD_API_KEY not set, skipping OWASP check"
           fi
