@@ -191,14 +191,14 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "3000:80"
+      - "3000:8080"
     networks:
       - frontend-network
     depends_on:
       api-gateway:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://localhost:80" ]
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080" ]
       interval: 30s
       timeout: 10s
       retries: 3
