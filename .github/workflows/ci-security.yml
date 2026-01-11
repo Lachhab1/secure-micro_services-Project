@@ -110,11 +110,25 @@ jobs:
 
       - name: Run OWASP Dependency Check - Product Service
         working-directory: ./product-service
-        run: mvn dependency-check:check -B || true
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          if [ -n "$NVD_API_KEY" ]; then
+            mvn dependency-check:check -B -DnvdApiKey=$NVD_API_KEY || true
+          else
+            echo "⚠️ NVD_API_KEY not set, skipping OWASP check"
+          fi
 
       - name: Run OWASP Dependency Check - Order Service
         working-directory: ./order-service
-        run: mvn dependency-check:check -B || true
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          if [ -n "$NVD_API_KEY" ]; then
+            mvn dependency-check:check -B -DnvdApiKey=$NVD_API_KEY || true
+          else
+            echo "⚠️ NVD_API_KEY not set, skipping OWASP check"
+          fi
 
       - name: Upload Dependency Check Reports
         uses: actions/upload-artifact@v4
@@ -124,6 +138,7 @@ jobs:
           path: |
             product-service/target/dependency-check-report.html
             order-service/target/dependency-check-report.html
+          if-no-files-found: ignore
 
   trivy-scan:
     name: Trivy Container Scan
