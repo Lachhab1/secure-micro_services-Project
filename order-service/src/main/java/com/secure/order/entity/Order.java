@@ -70,4 +70,13 @@ public class Order {
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    /**
+     * Lifecycle callback pour calculer le total avant la persistance.
+     */
+    @PrePersist
+    @PreUpdate
+    public void prePersist() {
+        calculateTotalAmount();
+    }
 }
