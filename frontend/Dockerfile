@@ -2,6 +2,14 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+# Build arguments for environment configuration
+ARG VITE_KEYCLOAK_URL=http://localhost:8180
+ARG VITE_API_URL=http://localhost:8080
+
+# Set as environment variables for Vite build
+ENV VITE_KEYCLOAK_URL=$VITE_KEYCLOAK_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 # Copy package files
 COPY package*.json ./
 
