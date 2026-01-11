@@ -111,28 +111,24 @@ jobs:
       - name: Run OWASP Dependency Check - Product Service
         working-directory: ./product-service
         continue-on-error: true
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
-          echo "Running OWASP Dependency Check..."
+          echo "Running OWASP Dependency Check with OSS Index..."
           mvn dependency-check:check -B \
-            -DnvdApiKey="${NVD_API_KEY}" \
-            -DnvdApiDelay=6000 \
-            -DnvdValidForHours=24 \
-            -DfailBuildOnCVSS=11 || echo "⚠️ OWASP check completed with warnings"
+            -DautoUpdate=false \
+            -DnvdAnalyzerEnabled=false \
+            -DossIndexAnalyzerEnabled=true \
+            -DfailBuildOnCVSS=11 || echo "⚠️ OWASP check completed"
 
       - name: Run OWASP Dependency Check - Order Service
         working-directory: ./order-service
         continue-on-error: true
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
-          echo "Running OWASP Dependency Check..."
+          echo "Running OWASP Dependency Check with OSS Index..."
           mvn dependency-check:check -B \
-            -DnvdApiKey="${NVD_API_KEY}" \
-            -DnvdApiDelay=6000 \
-            -DnvdValidForHours=24 \
-            -DfailBuildOnCVSS=11 || echo "⚠️ OWASP check completed with warnings"
+            -DautoUpdate=false \
+            -DnvdAnalyzerEnabled=false \
+            -DossIndexAnalyzerEnabled=true \
+            -DfailBuildOnCVSS=11 || echo "⚠️ OWASP check completed"
 
       - name: Upload Dependency Check Reports
         uses: actions/upload-artifact@v4
